@@ -1,0 +1,4 @@
+{{#if description}}// {{{description}}}
+//{{/if}}{{#if mixin.parameters}}
+{{#each mixin.parameters}}// {{@key}}: {{{this}}}
+{{/each}}{{/if}}{{{mixin.syntax}}}

@@ -1,0 +1,55 @@
+<h2>foo-mixin-one</h2>
+
+<p>Mixin one Lorem ipsum</p>
+
+<ul class="nav nav-tabs">
+  <li class="active">
+    <a href="#example-mixin-one-sass">Sass</a>
+  </li>
+  <li>
+    <a href="#example-mixin-one-scss">Scss</a>
+  </li>
+  <li>
+    <a href="#example-mixin-one-less">Less</a>
+  </li>
+  <li>
+    <a href="#example-mixin-one-stylus">Stylus</a>
+  </li>
+  <li>
+    <a href="#example-mixin-one-html">Html</a>
+  </li>
+</ul>
+
+<div class="tab-content">
+  <code id="#example-mixin-one-sass" class="tab-pane active">
+    
+.example-mixin-one
+  +foo-bar-mixin-one(-10px, -10px)
+
+  </code>
+  <code id="#example-mixin-one-scss" class="tab-pane">
+    
+.example-mixin-one {
+  @include foo-bar-mixin-one(-10px, -10px);
+}
+
+  </code>
+  <code id="#example-mixin-one-less" class="tab-pane">
+    
+.example-mixin-one {
+  .foo-bar-mixin-one(-10px, -10px);
+}
+
+  </code>
+  <code id="#example-mixin-one-stylus" class="tab-pane">
+    
+.example-mixin-one
+  foo-bar-mixin-one(-10px, -10px)
+
+  </code>
+  <code id="#example-mixin-one-html" class="tab-pane">
+    
+&lt;div class=&quot;.example-mixin-one&quot;&gt;&lt;/div&gt;
+
+  </code>
+</div>

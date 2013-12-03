@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+var argv = require('optimist')
+  .usage('Generates Less, Sass/Scss & Stylus libraries defined through YAML..\nUsage: $0')
+  .demand('s')
+    .alias('s', 'source')
+    .describe('s', 'Source folder')
+  .demand('o')
+    .alias('o', 'output')
+    .describe('o', 'Output folder')
+  .argv
+
+require('../').library(argv.source, argv.output);
