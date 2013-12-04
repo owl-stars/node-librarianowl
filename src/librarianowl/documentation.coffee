@@ -8,7 +8,6 @@ class Documentation
   _.str = require('underscore.string')
   path  = require("path")
   fs    = require("fs-extra")
-  hbs   = require("handlebars")
 
   # -----------------------------------------------------------------------------------------------
   # ~ Variables
@@ -31,10 +30,16 @@ class Documentation
   # ~ Constructor
   # -----------------------------------------------------------------------------------------------
 
+  ###
+  @param {String} source
+  @param {String} target
+  @param {Object} options
+  ###
   constructor: (@source, @target, options) ->
     defaults =
       helpers: {}
-      template: "#{path.dirname(__dirname)}/templates/documentation.html.hbs"
+      filename: false
+      template: "#{path.dirname(__dirname)}/templates/documentation.hbs"
 
     # extend options
     _.extend(@options = {}, defaults, options)
@@ -43,18 +48,19 @@ class Documentation
   # ~ Public methods
   # -----------------------------------------------------------------------------------------------
 
+  ###
+  @param {Item} item
+  ###
   compile: (item) ->
-    targetDir = path.resolve(@target, item.relPath)
-    targetExt = path.basename(@options.template).split(".")
-    targetFile = path.resolve(targetDir, "#{item.packageName}.#{targetExt[targetExt.length - 2]}")
+    targetDir = path.resolve(@target, item.package, item.module)
+    targetFilename = if @options.filename then @options.filename.apply(@, [item]) else "#{item.basename}.html"
+    targetFile = path.resolve(targetDir, targetFilename)
 
     # get stream
     stream = if fs.existsSync(targetFile) then fs.readFileSync(targetFile) else ""
 
     # make directory
     fs.mkdirpSync(targetDir)
-    # get builder
-    builder = hbs.compile(fs.readFileSync(@options.template, "utf8"))
 
     # build object
     obj = item.getContents()
@@ -62,11 +68,8 @@ class Documentation
     obj.mixinName = item.getMixinName()
     obj.mixinParams = item.getMixinParams()
 
-    # register helper
-    hbs.registerHelper key, value for key, value of @options.helper
-
     # get contents
-    stream += builder(obj)
+    stream += Util.render(obj, @options.template, @options.helpers)
 
     # write file
     fs.writeFileSync(targetFile, stream)

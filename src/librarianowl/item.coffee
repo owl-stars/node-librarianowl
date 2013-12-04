@@ -7,6 +7,7 @@ class Item
   yaml  = require('js-yaml')
   path  = require("path")
   fs    = require("fs-extra")
+  _str  = require("underscore.string")
 
   # -----------------------------------------------------------------------------------------------
   # ~ Variables
@@ -35,7 +36,11 @@ class Item
   ###
   @var {String}
   ###
-  packageName: null
+  module: null
+  ###
+  @var {String}
+  ###
+  package: null
   ###
   @var {Object}
   ###
@@ -51,10 +56,11 @@ class Item
   ###
   constructor: (@source, @file) ->
     @dirname = path.dirname(@file)
-    @relPath = path.relative(@source, path.dirname(@dirname))
-    @packageName = path.basename(@dirname)
-    @contents = yaml.load(fs.readFileSync(@file, 'utf8'))
     @basename = path.basename(@file, '.yml')
+    @relPath = path.relative(@source, @dirname)
+    @contents = yaml.load(fs.readFileSync(@file, 'utf8'))
+    @package = path.dirname(@relPath)
+    @module = path.basename(@relPath)
 
   # -----------------------------------------------------------------------------------------------
   # ~ Public methods
@@ -70,7 +76,7 @@ class Item
   @return {String}
   ###
   getMixinName: ->
-    return "#{@relPath.split("/").join("-")}-#{@basename}"
+    return "#{@relPath.split('/').join('-')}-#{@basename}"
 
   ###
   @return {Array} Parameter names as array

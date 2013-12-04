@@ -40,7 +40,7 @@ class Librarianowl
     fs.removeSync(target) if fs.existsSync(target)
 
     # iterate through files
-    dive(source, (err, file) =>
+    dive(source, (error, file) =>
       throw error if error
       return if path.extname(file) isnt ".yml"
       item = new Item(source, file)

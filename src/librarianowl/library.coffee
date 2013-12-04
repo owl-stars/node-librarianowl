@@ -6,10 +6,8 @@ class Library
 
   _     = require('underscore')
   _.str = require('underscore.string')
-  dive  = require("diveSync")
   path  = require("path")
   fs    = require("fs-extra")
-  hbs   = require("handlebars")
 
   # -----------------------------------------------------------------------------------------------
   # ~ Variables
@@ -32,9 +30,15 @@ class Library
   # ~ Constructor
   # -----------------------------------------------------------------------------------------------
 
+  ###
+  @param {String} source
+  @param {String} target
+  @param {Object} options
+  ###
   constructor: (@source, @target, options) ->
     defaults =
       helpers: {}
+      filename: false
       template: "#{path.dirname(__dirname)}/templates/library.hbs"
 
     # extend options
@@ -44,9 +48,14 @@ class Library
   # ~ Public methods
   # -----------------------------------------------------------------------------------------------
 
+  ###
+  @param {Item} item
+  @param {String} syntax
+  ###
   compile: (item, syntax) ->
-    targetDir = path.resolve(@target, syntax, item.relPath)
-    targetFile = path.resolve(targetDir, "#{item.packageName}.#{syntax}")
+    targetDir = path.resolve(@target, syntax, item.package)
+    targetFilename = if @options.filename then @options.filename.apply(@, [item, syntax]) else "#{item.module}.#{syntax}"
+    targetFile = path.resolve(targetDir, targetFilename)
 
     # get stream
     stream = if fs.existsSync(targetFile) then fs.readFileSync(targetFile) else ""
@@ -60,19 +69,10 @@ class Library
     if obj.imports? and obj.imports[syntax]?
       stream = obj.imports[syntax] + "\n" + stream
     else
-      # get builder
-      builder = hbs.compile(fs.readFileSync(@options.template, "utf8"))
-
       # build object
       obj.mixin.syntax = obj.mixin[syntax]
-
-      # register helper
-      hbs.registerHelper key, value for key, value of @options.helper
-
       # get contents
-      stream += builder(obj)
+      stream += Util.render(obj, @options.template, @options.helpers)
 
     # write file
     fs.writeFileSync(targetFile, stream)
-
-
