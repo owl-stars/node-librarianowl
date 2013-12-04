@@ -1,6 +1,7 @@
 # node-librarianowl
 
 [![Build Status](https://travis-ci.org/owl-stars/node-librarianowl.png?branch=master)](https://travis-ci.org/owl-stars/node-librarianowl)
+[![Coverage Status](https://coveralls.io/repos/owl-stars/node-librarianowl/badge.png?branch=master)](https://coveralls.io/r/owl-stars/node-librarianowl?branch=master)
 [![Dependency Status](https://gemnasium.com/owl-stars/node-librarianowl.png)](https://gemnasium.com/owl-stars/node-librarianowl)
 [![NPM version](https://badge.fury.io/js/librarianowl.png)](http://badge.fury.io/js/librarianowl)
 
