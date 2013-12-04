@@ -1,5 +1,9 @@
 # node-librarianowl
 
+[![Build Status](https://travis-ci.org/owl-stars/node-librarianowl.png?branch=master)](https://travis-ci.org/owl-stars/node-librarianowl)
+[![Dependency Status](https://gemnasium.com/owl-stars/node-librarianowl.png)](https://gemnasium.com/owl-stars/node-librarianowl)
+[![NPM version](https://badge.fury.io/js/librarianowl.png)](http://badge.fury.io/js/librarianowl)
+
 > Simple toolkit to generates Less, Sass/Scss & Stylus libraries defined through YAML.
 
 ## Getting Started
@@ -13,7 +17,7 @@ librarianowl = require 'librarianowl'
 librarianowl.library "src", "lib",
   helpers: "helpers.js"
   template: "template-lib.hbs"
-  
+
 # compile the documenation
 librarianowl.documentation "src", "docs",
   helpers: "helpers.js"
@@ -215,7 +219,7 @@ imports:
 
 ### Generating the library
 
-#### Method: 
+#### Method:
 
 ```
 ###
@@ -254,14 +258,14 @@ You can define you custom helpers that will be available with the *Handlebars* t
 ```
 # Helpers as an object
 librarianowl.library "src", "docs",
-  helpers: 
+  helpers:
     "trim": (val) ->
       return val.trim()
 
-# Helpers in a seperate file      
+# Helpers in a seperate file
 librarianowl.library "src", "docs",
   helpers: "helpers.js"
-      
+
 ```
 
 ##### filename
@@ -279,7 +283,7 @@ librarianowl.library "src", "docs",
 
 ### Generating the documentation
 
-#### Method: 
+#### Method:
 
 ```
 ###
@@ -352,14 +356,14 @@ You can define you custom helpers that will be available with the *Handlebars* t
 ```
 # Helpers as an object
 librarianowl.documentation "src", "docs",
-  helpers: 
+  helpers:
     "trim": (val) ->
       return val.trim()
 
-# Helpers in a seperate file      
+# Helpers in a seperate file
 librarianowl.documentation "src", "docs",
   helpers: "helpers.js"
-      
+
 ```
 
 ##### filename
