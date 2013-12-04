@@ -39,7 +39,6 @@
   },
   "devDependencies": {
     "chai": "~1.8.0",
-    "librarianowl": "~0.1.0",
     "grunt-coffeelint": "0.0.7",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.7.0",

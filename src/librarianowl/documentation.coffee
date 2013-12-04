@@ -25,17 +25,19 @@ class Documentation
   ###
   @var {Object}
   ###
-  options:
-    helpers: {}
-    template: "templates/documentation.html.hbs"
+  options: null
 
   # -----------------------------------------------------------------------------------------------
   # ~ Constructor
   # -----------------------------------------------------------------------------------------------
 
   constructor: (@source, @target, options) ->
+    defaults =
+      helpers: {}
+      template: "#{path.dirname(__dirname)}/templates/documentation.html.hbs"
+
     # extend options
-    _.extend(@options, @options, options)
+    _.extend(@options = {}, defaults, options)
 
   # -----------------------------------------------------------------------------------------------
   # ~ Public methods
@@ -45,6 +47,9 @@ class Documentation
     targetDir = path.resolve(@target, item.relPath)
     targetExt = path.basename(@options.template).split(".")
     targetFile = path.resolve(targetDir, "#{item.packageName}.#{targetExt[targetExt.length - 2]}")
+
+    # get stream
+    stream = if fs.existsSync(targetFile) then fs.readFileSync(targetFile) else ""
 
     # make directory
     fs.mkdirpSync(targetDir)
@@ -61,10 +66,7 @@ class Documentation
     hbs.registerHelper key, value for key, value of @options.helper
 
     # get contents
-    contents = builder(obj)
+    stream += builder(obj)
 
     # write file
-    if fs.existsSync(targetFile)
-      fs.appendFileSync(targetFile, contents)
-    else
-      fs.writeFileSync(targetFile, contents)
+    fs.writeFileSync(targetFile, stream)

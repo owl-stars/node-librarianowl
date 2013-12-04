@@ -41,6 +41,7 @@ class Librarianowl
 
     # iterate through files
     dive(source, (err, file) =>
+      throw error if error
       return if path.extname(file) isnt ".yml"
       item = new Item(source, file)
       comp.compile(item, syntax) for syntax in @syntaxes
@@ -54,8 +55,10 @@ class Librarianowl
     fs.removeSync(target) if fs.existsSync(target)
 
     # iterate through files
-    dive(source, (err, file) =>
+    dive(source, (error, file) =>
+      throw error if error
       return if path.extname(file) isnt ".yml"
+      return if path.basename(file).substr(0, 1) is "_"
       item = new Item(source, file)
       comp.compile(item)
     )

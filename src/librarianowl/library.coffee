@@ -26,17 +26,19 @@ class Library
   ###
   @var {Object}
   ###
-  options:
-    helpers: {}
-    template: "templates/library.hbs"
+  options: null
 
   # -----------------------------------------------------------------------------------------------
   # ~ Constructor
   # -----------------------------------------------------------------------------------------------
 
   constructor: (@source, @target, options) ->
+    defaults =
+      helpers: {}
+      template: "#{path.dirname(__dirname)}/templates/library.hbs"
+
     # extend options
-    _.extend(@options, @options, options)
+    _.extend(@options = {}, defaults, options)
 
   # -----------------------------------------------------------------------------------------------
   # ~ Public methods
@@ -46,23 +48,31 @@ class Library
     targetDir = path.resolve(@target, syntax, item.relPath)
     targetFile = path.resolve(targetDir, "#{item.packageName}.#{syntax}")
 
+    # get stream
+    stream = if fs.existsSync(targetFile) then fs.readFileSync(targetFile) else ""
+
     # make directory
     fs.mkdirpSync(targetDir)
-    # get builder
-    builder = hbs.compile(fs.readFileSync(@options.template, "utf8"))
-
     # build object
     obj = item.getContents()
-    obj.mixin.syntax = obj.mixin[syntax]
 
-    # register helper
-    hbs.registerHelper key, value for key, value of @options.helper
-
-    # get contents
-    contents = builder(obj)
-
-    # get contents & write file
-    if fs.existsSync(targetFile)
-      fs.appendFileSync(targetFile, contents)
+    # handle imports
+    if obj.imports? and obj.imports[syntax]?
+      stream = obj.imports[syntax] + "\n" + stream
     else
-      fs.writeFileSync(targetFile, contents)
+      # get builder
+      builder = hbs.compile(fs.readFileSync(@options.template, "utf8"))
+
+      # build object
+      obj.mixin.syntax = obj.mixin[syntax]
+
+      # register helper
+      hbs.registerHelper key, value for key, value of @options.helper
+
+      # get contents
+      stream += builder(obj)
+
+    # write file
+    fs.writeFileSync(targetFile, stream)
+
+

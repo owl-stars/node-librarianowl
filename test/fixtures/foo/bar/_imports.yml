@@ -1,0 +1,9 @@
+imports:
+  less: |
+    @import "something";
+  sass: |
+    @import "something"
+  scss: |
+    @import "something";
+  styl: |
+    @import "something"
