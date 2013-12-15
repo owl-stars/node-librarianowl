@@ -23,6 +23,17 @@ librarianowl.library "src", "lib",
 librarianowl.documentation "src", "docs",
   helpers: "helpers.js"
   template: "template-docs.hbs"
+  
+# compile the examples
+librarianowl.examples "src", "examples",
+  helpers: "helpers.js"
+  template: "template-examples.hbs"
+  imports: (syntax) ->
+    switch syntax
+      when "sass" then return "@import '../../lib/#{syntax}/cssowl'"
+      when "scss" then return "@import '../../lib/#{syntax}/cssowl';"
+      when "less" then return "@import '../../lib/#{syntax}/cssowl';"
+      when "styl" then return "@import '../../lib/#{syntax}/cssowl'"
 ```
 
 ## Documentation
@@ -192,7 +203,7 @@ examples:
     .example-display {
       .cssowl-sprite-display(-10px, -10px, 91px, 95px, url("sprite.png"));
     }
-  stylus: |
+  styl: |
     .example-display
       cssowl-sprite-display(-10px, -10px, 91px, 95px, url("sprite.png"))
   html: |
@@ -321,7 +332,7 @@ Default: `librarianowl/templates/documentation.hbs`
     <a href="#example-{{{basename}}}-less">Less</a>
   </li>
   <li>
-    <a href="#example-{{{basename}}}-stylus">Stylus</a>
+    <a href="#example-{{{basename}}}-styl">Stylus</a>
   </li>
   <li>
     <a href="#example-{{{basename}}}-html">Html</a>
@@ -338,8 +349,8 @@ Default: `librarianowl/templates/documentation.hbs`
   <code id="#example-{{{basename}}}-less" class="tab-pane">
     {{examples.less}}
   </code>
-  <code id="#example-{{{basename}}}-stylus" class="tab-pane">
-    {{examples.stylus}}
+  <code id="#example-{{{basename}}}-styl" class="tab-pane">
+    {{examples.styl}}
   </code>
   <code id="#example-{{{basename}}}-html" class="tab-pane">
     {{examples.html}}
@@ -379,6 +390,85 @@ librarianowl.documentation "src", "docs",
   filename: (item, syntax) ->
       return "#{item.basename}.#{syntax}"
 ```
+
+
+### Generating the examples
+
+#### Method:
+
+```
+###
+@param {String} source Source directory
+@param {String} target Target directory
+@param {Object} options Optional options
+###
+examples: (source, target, options={}) ->
+ ...
+```
+
+#### Options
+
+##### template
+
+Type: `String`
+Default: `librarianowl/templates/examples.hbs`
+
+*Handlebars* template file to render the documentation file.
+
+```
+{{{examples.syntax}}}
+```
+
+##### helpers
+
+Type: `Object` `String`
+Default: `{}`
+
+You can define you custom helpers that will be available with the *Handlebars* template rendering. It can be either a object containing each helper or a external file in which you define your helpers:
+
+```
+# Helpers as an object
+librarianowl.examples "src", "examples",
+  helpers:
+    "trim": (val) ->
+      return val.trim()
+
+# Helpers in a seperate file
+librarianowl.examples "src", "examples",
+  helpers: "helpers.js"
+
+```
+
+##### filename
+
+Type: `Function`
+Default: false
+
+You can modify the target filename.
+
+```
+librarianowl.examples "src", "examples",
+  filename: (item, syntax) ->
+      return "#{item.basename}.#{syntax}"
+```
+
+##### imports
+
+Type: `Function`
+Default: false
+
+Return a string that should be prepended to the generated file.
+
+```
+librarianowl.examples "src", "examples",
+  imports: (syntax) ->
+    switch syntax
+      when "sass" then return "@import 'path/to/file'"
+      when "scss" then return "@import 'path/to/file';"
+      when "less" then return "@import 'path/to/file';"
+      when "styl" then return "@import 'path/to/file'"
+```
+
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

@@ -29,7 +29,7 @@ examples:
     .example-mixin-one {
       .foo-bar-mixin-one(-10px, -10px);
     }
-  stylus: |
+  styl: |
     .example-mixin-one
       foo-bar-mixin-one(-10px, -10px)
   html: |

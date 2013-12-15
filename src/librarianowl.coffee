@@ -63,4 +63,20 @@ class Librarianowl
       comp.compile(item)
     )
 
+  examples: (source, target, options={}) ->
+    # create comp
+    comp = new Examples(source, target, options)
+
+    # clean target
+    fs.removeSync(target) if fs.existsSync(target)
+
+    # iterate through files
+    dive(source, (error, file) =>
+      throw error if error
+      return if path.extname(file) isnt ".yml"
+      item = new Item(source, file)
+      comp.compile(item, syntax) for syntax in @syntaxes
+    )
+
+
 module.exports = new Librarianowl
