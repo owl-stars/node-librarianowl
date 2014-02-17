@@ -1,0 +1,33 @@
+description: |
+  `bar: one` extend modifier.
+styles:
+  sass: |
+    %foo-bar--one
+      bar: one
+  scss: |
+    %foo-bar--one {
+      bar: one;
+    }
+  less: |
+    .foo-bar--one {
+      bar: one;
+    }
+  styl: |
+    %foo-bar--one
+      bar one
+examples:
+  sass: |
+    .example-bar--one
+      +%foo-bar--one
+  scss: |
+    .example-bar--one
+      @extend %foo-bar--one
+  less: |
+    .example-bar--one {
+      &:extend(.foo-bar--one);
+    }
+  styl: |
+    .example-bar--one
+      @extend %foo-bar--one
+  html: |
+    <div class=".example-bar--one"></div>

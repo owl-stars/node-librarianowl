@@ -44,7 +44,7 @@ class Item
   ###
   @var {Object}
   ###
-  contents: null
+  yaml: null
 
   # -----------------------------------------------------------------------------------------------
   # ~ Constructor
@@ -58,30 +58,6 @@ class Item
     @dirname = path.dirname(@file)
     @basename = path.basename(@file, '.yml')
     @relPath = path.relative(@source, @dirname)
-    @contents = yaml.load(fs.readFileSync(@file, 'utf8'))
+    @yaml = yaml.load(fs.readFileSync(@file, 'utf8'))
     @package = path.dirname(@relPath)
     @module = path.basename(@relPath)
-
-  # -----------------------------------------------------------------------------------------------
-  # ~ Public methods
-  # -----------------------------------------------------------------------------------------------
-
-  ###
-  @return {Object} The YAML data
-  ###
-  getContents: ->
-    return @contents
-
-  ###
-  @return {String}
-  ###
-  getMixinName: ->
-    return "#{@relPath.split('/').join('-')}-#{@basename}"
-
-  ###
-  @return {Array} Parameter names as array
-  ###
-  getMixinParams: ->
-    ret = []
-    ret.push(key) for key, value of @getContents().mixin.parameters
-    return ret

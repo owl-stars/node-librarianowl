@@ -27,6 +27,6 @@ class Util
       GLOBAL.hbs = hbs
       require(path.resolve(helpers))
     else if _.isObject(helpers)
-      hbs.registerHelper key, value for key, value of helpers
+      hbs.registerHelper(key, value) for key, value of helpers
     # get contents
     return builder(obj)

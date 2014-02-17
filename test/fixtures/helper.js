@@ -1,3 +1,3 @@
-hbs.registerHelper("test", function(val) {
-  return "---" + val + "----";
+hbs.registerHelper("trim", function(val) {
+  return (val) ? val.trim() : val;
 });

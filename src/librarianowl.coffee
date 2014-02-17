@@ -24,59 +24,91 @@ class Librarianowl
   # -----------------------------------------------------------------------------------------------
 
   ###
-  @var {Array}
+  @var {Object}
   ###
-  syntaxes: ["less", "sass", "scss", "styl"]
+  options: null
+  ###
+  @var {String}
+  ###
+  target: null
+  ###
+  @var {String}
+  ###
+  source: null
 
   # -----------------------------------------------------------------------------------------------
   # ~ Public methods
   # -----------------------------------------------------------------------------------------------
 
-  library: (source, target, options={}) ->
-    # create comp
-    comp = new Library(source, target, options)
+  compile: (@source, @target, options={}) ->
+    defaults =
+      helpers: {}
+      filter: false
+      filename: @._filename
+      syntaxes: ["less", "sass", "scss", "styl"]
+      template: "#{path.dirname(__dirname)}/templates/default.hbs"
 
-    # clean target
-    fs.removeSync(target) if fs.existsSync(target)
+    # extend options
+    _.extend(@options = {}, defaults, options)
 
-    # iterate through files
-    dive(source, (error, file) =>
+    @._cleanTarget()
+
+    @._compileSource()
+
+  # -----------------------------------------------------------------------------------------------
+  # ~ Private methods
+  # -----------------------------------------------------------------------------------------------
+
+  ###
+  @param {Item} item
+  @param {String} syntax
+  ###
+  _filename: (item, syntax) ->
+    return "#{item.module}.#{syntax}"
+
+  ###
+  Clean the target directory if exists
+  ###
+  _cleanTarget: ->
+    fs.removeSync(@target) if fs.existsSync(@target)
+
+  ###
+  Scan the source directory and compile files
+  ###
+  _compileSource: ->
+    dive(@source, (error, file) =>
       throw error if error
       return if path.extname(file) isnt ".yml"
-      item = new Item(source, file)
-      comp.compile(item, syntax) for syntax in @syntaxes
+      return if @options.filter and not @options.filter(path.basename(file))
+      item = new Item(@source, file)
+      @._compileSourceItem(item, syntax) for syntax in @options.syntaxes
     )
 
-  documentation: (source, target, options={}) ->
-    # create comp
-    comp = new Documentation(source, target, options)
+  ###
+  @param {Item} item
+  @param {String} syntax
+  ###
+  _compileSourceItem: (item, syntax) ->
+    targetDir = path.resolve(@target, syntax, item.package)
+    targetFilename = @options.filename(item, syntax)
+    targetFile = path.resolve(targetDir, targetFilename)
 
-    # clean target
-    fs.removeSync(target) if fs.existsSync(target)
+    # get stream
+    stream = if fs.existsSync(targetFile) then fs.readFileSync(targetFile) else ""
 
-    # iterate through files
-    dive(source, (error, file) =>
-      throw error if error
-      return if path.extname(file) isnt ".yml"
-      return if path.basename(file).substr(0, 1) is "_"
-      item = new Item(source, file)
-      comp.compile(item)
-    )
+    # make directory
+    fs.mkdirpSync(targetDir)
 
-  examples: (source, target, options={}) ->
-    # create comp
-    comp = new Examples(source, target, options)
+    # handle imports
+    if item.yaml.imports? and item.yaml.imports[syntax]?
+      stream = item.yaml.imports[syntax] + "\n" + stream
+    else
+      item.yaml.styles.syntax = item.yaml.styles[syntax]
+      item.yaml.examples.syntax = item.yaml.examples[syntax]
+      stream += Util.render(item.yaml, @options.template, @options.helpers)
 
-    # clean target
-    fs.removeSync(target) if fs.existsSync(target)
-
-    # iterate through files
-    dive(source, (error, file) =>
-      throw error if error
-      return if path.extname(file) isnt ".yml"
-      item = new Item(source, file)
-      comp.compile(item, syntax) for syntax in @syntaxes
-    )
+    # write file
+    fs.writeFileSync(targetFile, stream)
 
 
 module.exports = new Librarianowl
