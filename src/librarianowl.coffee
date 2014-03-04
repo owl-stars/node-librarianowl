@@ -103,6 +103,7 @@ class Librarianowl
     if item.yaml.imports? and item.yaml.imports[syntax]?
       stream = item.yaml.imports[syntax] + "\n" + stream
     else
+      item.yaml.syntax = syntax
       item.yaml.styles.syntax = item.yaml.styles[syntax]
       item.yaml.examples.syntax = item.yaml.examples[syntax]
       stream += Util.render(item.yaml, @options.template, @options.helpers)
