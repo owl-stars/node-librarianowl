@@ -471,7 +471,15 @@ librarianowl.examples "src", "examples",
 
 
 ## Contributing
+[![I Love Open Source](http://www.iloveopensource.io/images/logo-lightbg.png)](http://www.iloveopensource.io/projects/5319a6a987659fce66000a34)
+
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+
 ## License
-Copyright (c) 2013 Owl-Stars under the MIT license.
+Copyright (c) Owl-Stars under the MIT license.
